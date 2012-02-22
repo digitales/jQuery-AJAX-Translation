@@ -2,7 +2,6 @@
  * Google AJAX Translation
  * 2010-04-15
  */
-
 jQuery( function() {
 	jQuery('.translate_block').show(); // Show [Translate] buttons after the document is ready
 	var popup_id = document.getElementById( 'translate_popup' );
