@@ -16,15 +16,18 @@ This program is free software; you can redistribute it and/or modify it under th
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 */
 
+register_deactivation_hook( __FILE__, array('JqueryTranslation', 'deactivate') );
+    
 if (!class_exists('JqueryTranslation')) {
+
 	class JqueryTranslation {
 
 		var $optionPrefix = 'jquery_translation_';
 		var $version      = '0.6.1';
 		var $pluginUrl    = 'http://wordpress.org/extend/plugins/jquery-ajax-translation/';
-		//var $authorUrl    = 'https://github.com/digitales/Jquery-AJAX-Translation';
-        var $authorUrl    = 'http://nthdesigns.co.uk/jquery-ajax-translation';
-
+		var $authorUrl    = 'https://github.com/digitales/Jquery-AJAX-Translation';
+        var $javascriptConfig   = '<script type="text/javascript">$.translate.load("%s");</script>';
+        
 		var $languages = array(
 			'af' => 'Afrikaans', 'ar' => 'Arabic', 'be' => 'Belarusian', 'bg' => 'Bulgarian', 'ca' => 'Catalan',
 			'cs' => 'Czech', 'cy' => 'Welsh', 'da' => 'Danish', 'de' => 'German', 'el' => 'Greek', 'en' => 'English',
@@ -86,7 +89,7 @@ if (!class_exists('JqueryTranslation')) {
 			'languages' => array() // array of language codes to display in popup
 		);
 
-		var $textDomain = 'wpgt'; // not used currently
+		var $textDomain = 'jquery-translate'; // not used currently
 		var $languageFileLoaded = false; // not used currently
 		var $pluginRoot = '';
 		
@@ -100,17 +103,13 @@ if (!class_exists('JqueryTranslation')) {
 		function JqueryTranslation() {
 			$this->pluginRoot = plugins_url( '/', __FILE__ );
             // $this->loadDefaultSettings();
-            
-            //echo '<pre>'.print_r($this->options, 1).'</pre>';
-            //echo '$this->optionPrefix<pre>'.print_r($this->optionPrefix, 1).'</pre>';
 
 			foreach ( $this->options as $k => $v ) { // delete old style options from database from before version 0.5.0
-				delete_option( $this->optionPrefix.$k );
+				delete_option( $this->optionPrefix . $k );
 			}
-			//delete_option( $this -> optionPrefix . 'options' );
 
 			$current_options = get_option( $this->optionPrefix . 'options' );
-						
+
 			if ( $current_options ) {
 				foreach ( $current_options as $k => $v ) {
 					if ( isset( $current_options[$k] ) and false !== $current_options[$k] ) // Checks to skip false options (missing from database)
@@ -127,13 +126,19 @@ if (!class_exists('JqueryTranslation')) {
 
 			// Add action and filter hooks to WordPress
 			wp_register_style( 'ajax-translation', $this->pluginRoot . 'ajax-translation.css', false, '20100412', 'screen' );
-			wp_register_script( 'jquery-translate', $this->pluginRoot . 'jquery.translate-1.4.1.min.js', array('jquery'), '1.4.1', true );
+			//wp_register_script( 'jquery-translate', $this->pluginRoot . 'jquery.translate-1.4.1.min.js', array('jquery'), '1.4.1', true );
+            wp_register_script( 'jquery-translate', $this->pluginRoot . 'jquery.translate-1.4.7.including-ajax.js', array('jquery'), '1.4.1', true );
+            
 			if ( is_admin() ) {
 				add_action( 'admin_menu', array( &$this, 'addOptionsPage' ) );
 				add_action( 'admin_init', array( &$this, 'register_translation_settings' ) );
 			} else {
 				wp_enqueue_style( 'ajax-translation' );
 				wp_enqueue_script( 'jquery-translate' );
+                
+                // Ensure that the configuration is stored on the page.
+                add_action('wp_footer', array(&$this, 'embedJavascript'), 99);
+                
 				//wp_enqueue_script( 'google-ajax-translation-unminified', $this->pluginRoot . 'google-ajax-translation.js', array('jquery-translate'), '20100415', true ); // Minified version is appended to jquery.translate-1.4.1.min.js (Leave this here for debugging.)
 				if ( ( $this -> options['postEnable'] || $this -> options['pageEnable'] ) && ( 'none' != $this -> options['linkPosition'] ) ) {
 					add_filter( 'the_content', array( &$this, 'processContent' ), 50 );
@@ -146,7 +151,14 @@ if (!class_exists('JqueryTranslation')) {
 			}
 		}
         
-        
+        /**
+         * Load the default settings from a file
+         *
+         * This function is not currently in use.
+         *
+         * @param void
+         * @return void
+         */
         private function loadDefaultSettings()
         {
             $data = file_get_contents( $this->pluginRoot . 'settings/default_data.json' );
@@ -154,6 +166,20 @@ if (!class_exists('JqueryTranslation')) {
             foreach( $data AS $key => $value ){
                 $this->{$key} = $value;
             }
+        }
+        
+        /**
+         * Display the plugin's javascript and css code in the site's header
+         *
+         * @param void
+         * @return void
+        */
+        function embedJavascript() {
+
+            echo '<!-- BEGIN AJAX translate for WordPress -->';
+            echo sprintf($this->javascriptConfig, $this -> options['apiKey'] );
+            echo '<!-- END AJAX translate for WordPress -->';
+
         }
 
 		/**
@@ -273,6 +299,19 @@ if (!class_exists('JqueryTranslation')) {
 			}*/
 			delete_option( $this->optionPrefix . 'options' ); // delete options from wp_options table
 		}
+        
+        /**
+         * Deactivate the plugin
+         *
+         * @param void
+         * @return void
+         */
+        function deactivate()
+        {
+          //  $JqueryTranslation->uninstall();
+          //  delete_option( $this->optionPrefix . 'options' );   
+        }
+        
         
         /**
          * loadLanguageFiles

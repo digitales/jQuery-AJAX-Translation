@@ -9,4 +9,3 @@ if ( plugin_basename('jquery-ajax-translation/jquerytranslation.php') == WP_UNIN
 	require_once("jquerytranslation.php");
 	$JqueryTranslation->uninstall(); // delete options from wp_options table
 }
-?>
