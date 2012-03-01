@@ -1,5 +1,5 @@
 === JQuery AJAX Translation ===
-Contributors: Ross Tweedie
+Contributors: Ross Tweedie, Maarten Jacobs
 
 Tags: google, ajax, jquery, translate, translation, language
 Requires at least: 2.8
