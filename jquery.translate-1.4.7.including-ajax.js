@@ -11,7 +11,6 @@
  * 
  */
 
-;
 (function($) {
     
     
@@ -671,17 +670,17 @@
 
             if (key.length < 40) { //Google API
 
-                function _load() {
-                    google.load("language", version || "1", {
-                        "callback": google_loaded
-                    });
+                function _load(script) {
+                    // google.load("language", version || "1", {
+                    //     callback: google_loaded
+                    // });
                 }
 
-                if (typeof google !== "undefined" && google.load) _load();
-                else
-                $.getScript(((document.location.protocol == "https:") ? "https://" : "http://") + "www.google.com/jsapi" + (key ? "?key=" + key : ""), _load);
-
-
+                if(typeof google !== 'undefined' && google.load) {
+                  _load();
+                } else {
+                  $.getScript("//www.google.com/jsapi?key=" + key, _load);
+                }
 
                 $.ajax({
                     url: "https://www.googleapis.com/language/translate/v2/languages",
@@ -959,11 +958,11 @@
         ,
         //jslint doesn't seem to be able to parse some regexes correctly if used on the server,
         //however it works fine if it's run on the command line: java -jar rhino.jar jslint.js file.js
-        stripScripts: bind(replace, True, [/<script[^>]*>([\s\S]*?)<\/script>/gi, ""]),
+        stripScripts: bind(replace, True, [new RegExp("/<script[^>]*>([\s\S]*?)<\/script>/gi"), ""]),
 
-        stripWhitespace: bind(replace, True, [/\s\s+/g, " "]),
+        stripWhitespace: bind(replace, True, [new RegExp("/\s\s+/g"), " "]),
 
-        stripComments: bind(replace, True, [/<![ \r\n\t]*(--([^\-]|[\r\n]|-[^\-])*--[ \r\n\t]*)>/g, ""]) /*jslint skipLinesEnd*/
+        stripComments: bind(replace, True, [new RegExp("/<![ \r\n\t]*(--([^\-]|[\r\n]|-[^\-])*--[ \r\n\t]*)>/g"), ""]) /*jslint skipLinesEnd*/
     });
 
 
