@@ -26,7 +26,7 @@ if (!class_exists('JqueryTranslation')) {
 		var $version      = '0.6.1';
 		var $pluginUrl    = 'http://wordpress.org/extend/plugins/jquery-ajax-translation/';
 		var $authorUrl    = 'https://github.com/digitales/Jquery-AJAX-Translation';
-        var $javascriptConfig   = '<script type="text/javascript">$.translate.load("%s");</script>';
+        var $javascriptConfig   = '<script type="text/javascript">jQuery.translate.load("%s");</script>';
         
 		var $languages = array(
 			'af' => 'Afrikaans', 'ar' => 'Arabic', 'be' => 'Belarusian', 'bg' => 'Bulgarian', 'ca' => 'Catalan',
