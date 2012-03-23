@@ -634,7 +634,7 @@
             loading = True;
             key = _key;
 
-            if (key.length < 40) { //Google API
+            if (key.length) { //Google API
 
                 function _load(script) {
                     // google.load("language", version || "1", {
@@ -842,35 +842,6 @@
                     languageNames.push(e.name);
                 });
                 ms_loaded(languageCodes, languageNames);
-
-            } else { //Microsoft API
-                $.ajax({
-                    url: "http://api.microsofttranslator.com/V2/Ajax.svc/GetLanguagesForTranslate",
-                    dataType: "jsonp",
-                    jsonp: "oncomplete",
-                    crossDomain: true,
-                    context: this,
-                    data: {
-                        appId: key
-                    },
-                    success: function(languageCodes, status) {
-                        $.ajax({
-                            url: "http://api.microsofttranslator.com/V2/Ajax.svc/GetLanguageNames",
-                            dataType: "jsonp",
-                            jsonp: "oncomplete",
-                            crossDomain: true,
-                            context: this,
-                            data: {
-                                appId: key,
-                                locale: "en",
-                                languageCodes: '["' + languageCodes.join('", "') + '"]'
-                            },
-                            success: function(languageNames, status) {
-                                ms_loaded(languageCodes, languageNames);
-                            }
-                        });
-                    }
-                });
 
             }
 
