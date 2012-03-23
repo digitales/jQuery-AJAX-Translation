@@ -441,7 +441,7 @@
                 src = this.rawSourceSub = this.rawSources[i];
             if (!src) return;
 
-            if (key.length < 40) {
+            if (key.length) {
                 $.ajax({
                     url: "https://www.googleapis.com/language/translate/v2",
                     dataType: "jsonp",
@@ -462,40 +462,6 @@
                         var tr = response.data.translations[0].translatedText;
                         _this.queue[i] = tr || _this.rawSourceSub;
                         _this.detectedSourceLanguage = response.data.translations[0].detectedSourceLanguage;
-                        _this._check();
-                    }
-                });
-
-/*
-            GL.translate(src, this.from, this.to, bind(function(result){
-                //this._progress = 100 * (++this._nres) / this.rawSources.length;
-                //this.options.response.call(this, this._progress, result);
-                if(result.error)
-                    return this.options.error.call(this, result.error, this.rawSourceSub, this.from, this.to, this.options);
-            
-                this.queue[i] = result.translation || this.rawSourceSub;
-                this.detectedSourceLanguage = result.detectedSourceLanguage;
-                this._check();
-            }, this));
-            */
-            } else {
-                $.ajax({
-                    url: "http://api.microsofttranslator.com/V2/Ajax.svc/Translate",
-                    dataType: "jsonp",
-                    jsonp: "oncomplete",
-                    crossDomain: true,
-                    //context: this,
-                    data: {
-                        appId: key,
-                        from: _this.from,
-                        to: _this.to,
-                        contentType: "text/plain",
-                        text: src
-                    },
-                    success: function(data, status) {
-                        //console.log(data);
-                        _this.queue[i] = data || _this.rawSourceSub;
-                        //this.detectedSourceLanguage = result.detectedSourceLanguage;
                         _this._check();
                     }
                 });
