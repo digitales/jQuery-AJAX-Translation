@@ -26,7 +26,7 @@ if (!class_exists('JqueryTranslation')) {
 		var $version      = '0.6.1';
 		var $pluginUrl    = 'http://wordpress.org/extend/plugins/jquery-ajax-translation/';
 		var $authorUrl    = 'https://github.com/digitales/Jquery-AJAX-Translation';
-        var $javascriptConfig   = '<script type="text/javascript">jQuery.translate.load("%s");</script>';
+        	var $javascriptConfig   = '<script type="text/javascript">jQuery.translate.load("%s");</script>';
         
 		var $languages = array(
 			'af' => 'Afrikaans', 'ar' => 'Arabic', 'be' => 'Belarusian', 'bg' => 'Bulgarian', 'ca' => 'Catalan',
@@ -187,7 +187,7 @@ if (!class_exists('JqueryTranslation')) {
 		 */
 		function addOptionsPage(){
 			$plugin_page = add_options_page('Jquery Translation', 'Jquery Translation', 'manage_options', basename(__FILE__), array(&$this, 'outputOptionsPanel'));
-			if ( 'jquerytranslation' == $_GET['page'] ) { // add only to one admin page
+			if ( 'jquerytranslation.php' == $_GET['page'] ) { // add only to one admin page
 				add_action( 'admin_footer-'. $plugin_page, array( &$this, 'admin_js' ) );
 				wp_enqueue_style( 'ajax-translation' );
 				wp_enqueue_script( 'jquery-translate' );
